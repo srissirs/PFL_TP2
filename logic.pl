@@ -23,7 +23,7 @@ check_if_empty(GameState,List,FinalList) :-
     FinalList = List.
 
 %find_valid_moves(+GameState, [+LastX, +LastY], -ListOfMoves)
-find_valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
+valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     X is LastX-1,
     LX is LastX+2,
     Y is LastY-1,
