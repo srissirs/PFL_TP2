@@ -24,8 +24,8 @@ remove_duplicates([Piece | Tail], Aux, Result) :-  % checks if the head element 
     !,
     remove_duplicates(Tail, Aux, Result).
 
-remove_duplicates([Piece | Tail], Aux, Result) :-
-    remove_duplicates(Tail, [Piece | Aux], [Piece | Result]).
+remove_duplicates([Piece | Tail], Aux, [Piece|Result]) :-
+    remove_duplicates(Tail, [Piece | Aux], Result).
 
 %% points in rows 
 points_in_rows(GameState, Player, PiecesPoints) :-
