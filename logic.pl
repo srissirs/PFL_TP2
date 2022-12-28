@@ -51,3 +51,23 @@ check_lines(GameState, X,LastX, CurrY,LastY, List, LineList) :-
     check_lines(GameState, X,LastX ,Y,LastY, Result, LineList).
 
 
+build_row_board(Size,Size,List, Row):- Row = List,!.
+build_row_board(I,Size,List, Row):-
+append(List,[0],NewList),
+I1 is I+1,
+build_row_board(I1,Size,NewList, Row).
+
+build_board(Size,Size,List, Board):- Board = List,!.
+build_board(I,Size,List, Board):-
+build_row_board(0,Size,[],Row),
+append(List,[Row],NewList),
+I1 is I+1,
+build_board(I1,Size,NewList, Board).
+
+:- consult('print_board.pl').
+
+get_board(Size, Board):-
+build_board(0,Size,[], Board).
+
+
+
