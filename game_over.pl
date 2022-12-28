@@ -3,19 +3,23 @@
 game_over(GameState, Winner) :-
     number_empty_cells(GameState, EmptyCells),
     EmptyCells < 2,
-    ( EmptyCells = 1 ->
-        ask_player_continue(PlayerContinue),
-        PlayerContinue = 0,
-        PlayerContinue = 0
-    ; true ),
+    last_move(EmptyCells, PlayerContinue),
+    PlayerContinue = 0,
     count_points(GameState, 1, P1Points),
     count_points(GameState, -1, P2Points),
     ( P1Points > P2Points ->
-    Winner = 'player 1: ',
-    write(P1Points)
+    Winner = 'player 1'
     ; P1Points < P2Points ->
     Winner = 'player 2'
-    ; Winner = 'tie' ).
+    ; Winner = 'tie' ),
+    write(Winner), nl,
+    write('Player 1 points: '), write(P1Points), nl,
+    write('Player 2 points: '), write(P2Points), nl.
+
+last_move(1,PlayerContinue) :- 
+    ask_player_continue(PlayerContinue).
+
+last_move(0,0).
 
 number_empty_cells(GameState, EmptyCells) :-
     length(GameState, BoardSize),
@@ -34,7 +38,9 @@ iterate_board(GameState,X,Y,BoardSize,EmptyCellsAux,EmptyCellsFinal) :-
 
 ask_player_continue(PlayerContinue) :-
     repeat,
-    write('Do you want to continue? (1 for yes 0 for no) '),
+    write('Do you want to play? (1 for yes 0 for no) '),
     read(PlayerContinue),
-    ( PlayerContinue =:= 0; PlayerContinue =:= 1 ),
+    validate_player_continue(PlayerContinue),
     !.
+validate_player_continue(0).
+validate_player_continue(1).
