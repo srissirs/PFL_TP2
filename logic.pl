@@ -1,11 +1,6 @@
-
 :- use_module(library(lists)).
 
 isEmpty([]).
-empty(Board, [X, Y]):-
-    nth0(Y, Board, Row),
-    nth0(X, Row, Value),
-    Value == 0.
 
 within_bounds(GameState, [NewX, NewY]):-
     length(GameState, L),

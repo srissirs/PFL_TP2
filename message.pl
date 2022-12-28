@@ -1,67 +1,70 @@
+:- consult('print_board.pl').
+:- consult('logic.pl').
+:- consult('points.pl').
 
 % MOVES EXECUTION
 % move(+GameState, +Move, -NewGameState)
 %% Move composed by [Row,Col]
-move(GameState, [Row,Col],NewGameState) :-
-    add_piece(GameState,[NewRow,NewCol]),
-    change_player(OldPlayerTurn,NewPlayerTurn).
-
-%% empty(+GameState,[+X, +Y]) --> check if that cell is empty to play
-empty(GameState, [X, Y]):-
+move(GameState, [X,Y], Player, NewGameState) :-
     nth0(Y, GameState, Row),
     nth0(X, Row, Value),
-    Value == 0.
+    Value1 is Player,
+    add_piece(Row, X, Value1, NewRow),
+    add_piece(GameState, Y, NewRow, NewGameState).
 
+add_piece([_|T], 0, Value, [Value|T]).
+add_piece([H|T], Pos, Value, [H|R]) :-
+    Pos > 0,
+    Pos1 is Pos-1,
+    add_piece(T, Pos1, Value, R).
+    
 %% findall(Move,valid_move(GameState,LastMove,Move),Result). --> not working yet :/
 %% valid_move(+GameState, +Player, [+LastX, +LastY], [+NewX, +NewY] )
 valid_move(GameState, Player, [LastX, LastY], [NewX, NewY]) :-
-length(GameState, L+1),
-NewX >=0, NewX =< L, NewY >=0, NewY =< L, 
-abs(NewX - LastX) =< 1, abs(NewY - LastY) =< 1,
-empty(GameState, [NewX, NewY]).
+    length(GameState, L+1),
+    NewX >=0, NewX =< L, NewY >=0, NewY =< L, 
+    abs(NewX - LastX) =< 1, abs(NewY - LastY) =< 1,
+    empty(GameState, [NewX, NewY]).
 
 
 % LIST OF VALID MOVES
-% valid_moves(+GameState, +Player, +LastX, +LastY, -ListOfMoves)
-
-
-% END OF GAME
-% game_over(+GameState, -Winner)
+% find_valid_moves(+GameState, +Player, +LastX, +LastY, -ListOfMoves) -> valid_moves
 
 % BOARD EVALUATION
-% value(+GameState, +Player, -Value)
+% value(+GameState, +Player, -Value) -> count_points
 
 % COMPUTER MOVE
 % choose_move(+GameState, +Player, +Level, -Move)
 %% user random on ListOfMoves
 
+% GAME MODOS
 %% player_vs_player(+GameState)
 %% player_vs_computer(+GameState)
 %% computer_vs_computer(+GameState)
 
-player_vs_player(GameState) :-
-    display_game(GameState),
-    game_over(GameState,Winner),
-    !,
-    valid_moves(GameState, ListOfMoves),
-    read_move_input(ListOfMoves,Row,Col),
-    validate_move(ListOfMoves,Row,Col),
-    move(GameState, [Row,Col], NewGameState),   
-    player_vs_player(NewGameState).
+player_vs_player(GameState, PlayerTurn, LastMove) :-
+    print_board(GameState),
+    \+ game_over(GameState,Winner),
+    valid_moves(GameState, LastMove, ListOfMoves),
+    read_move_input(NewRow, NewCol),
+    validate_move(ListOfMoves,NewRow,NewCol),
+    move(GameState, [NewRow,NewCol], NewGameState),
+    change_player(PlayerTurn, NewPlayerTurn),
+    player_vs_player(NewGameState, NewPlayerTurn, [NewRow, NewCol]).
 
-
-%% read_move_input(+ListOfMoves,-Row,-Col)
-read_move_input(ListOfMoves,Row,Col) :-
+% PLAYER VS PLAYER
+%% read_move_input(-Row,-Col)
+read_move_input(Row,Col) :-
     write('Where do you want do put your new piece? '), % '4d' '4D'
     read(MoveInput),
-    parse_move_input(ListOfMoves,MoveInput,Row,Col).
+    parse_move_input(MoveInput,Row,Col).
 
 %% parse_move_input(+ListOfMoves,+MoveInput,-Row,-Col)
-parse_move_input(ListOfMoves,[RowString|ColString],Row,Col) :-
+parse_move_input([RowString|ColString],Row,Col) :-
     number_string(Row,RowString),
     letter_to_num(Col,ColString).
 
-%% EXISTENTE number_string(?Number,?String).
+%% !existente! number_string(?Number,?String).
 
 %% letter_to_num(-ColNum,+ColLetter).
 letter_to_num(1,'a').
@@ -123,19 +126,8 @@ letter_to_num(26,'Z').
 %%  - cell has to be empty
 
 validate_move(Row,Col,ListOfMoves) :-
-    validate_move_board_range(Row,Col),
-    !,
     memberchk([Row,Col],ListOfMoves).
 
-%% validate_move_board_range(+Row,+Col)
-validate_move_board_range(Row,Col) :-
-    board_size(BoardSize),
-    Row <= BoardSize,
-    !,
-    Col <= BoardSize.
-
-
-
 %% change_player(+OldPlayerTurn,-NewPlayerTurn)
-change_player(white,black).
-change_player(black,white).
+change_player(player1,player2).
+change_player(player1,player2).
