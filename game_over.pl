@@ -12,7 +12,7 @@ game_over(GameState, Winner) :-
     ; P1Points < P2Points ->
     Winner = 'player 2'
     ; Winner = 'tie' ),
-    write('Winner: ''), write(Winner), nl,
+    write('Winner: '), write(Winner), nl,
     write('Player 1 points: '), write(P1Points), nl,
     write('Player 2 points: '), write(P2Points), nl.
 
