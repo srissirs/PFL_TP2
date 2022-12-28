@@ -1,6 +1,3 @@
-:- consult('logic.pl').
-:- consult('print_board.pl').
-
 menu_header_format(Header):-
   format('~n~`*t ~p ~`*t~57|~n', [Header]).
 menu_empty_format :-
@@ -104,7 +101,7 @@ menu_option(1):-
   clear,
   banner('Player vs PLayer'),
   menu_board_size(Size),
-  clear, play_menu_pp(Size).
+  clear, play_menu_pp(Size), !.
 
 % Player vs Computer
 menu_option(2):-
@@ -132,8 +129,7 @@ menu_option(3):-
 %%%  PLAYER vs PLAYER
 play_menu_pp(Size):-
   get_board(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Player', 'Player'),
+  start_game(GameState).
 
 %%%  PLAYER vs COMPUTER
 play_menu_cp(Size, 1):-

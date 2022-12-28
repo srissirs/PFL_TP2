@@ -1,6 +1,10 @@
 :- use_module(library(lists)).
 
 isEmpty([]).
+empty(GameState, [X, Y]):-
+    nth0(Y, GameState, Row),
+    nth0(X, Row, Value),
+    Value == 0.
 
 within_bounds(GameState, [NewX, NewY]):-
     length(GameState, L),
@@ -17,6 +21,11 @@ check_if_empty(GameState,List,FinalList) :-
     FinalList = NewList;
     FinalList = List.
 
+valid_moves(GameState, [], ListOfMoves):-
+    length(GameState, L),
+    check_lines(GameState, 0, L, 0, L,[],NewList),
+    ListOfMoves = NewList.
+
 %find_valid_moves(+GameState, [+LastX, +LastY], -ListOfMoves)
 valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     X is LastX-1,
@@ -30,7 +39,6 @@ valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
 
 check_adjacent_line(_,_,XF,XF, List, Result) :-  Result = List,!.
 check_adjacent_line(GameState,Y,X,XF ,List, Result) :-
-    write(Y),nl,
     valid_move(GameState,[X,Y]) ->
     append(List,[[X,Y]],NewList),
     X1 is X+1,

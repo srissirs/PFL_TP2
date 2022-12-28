@@ -25,8 +25,8 @@ code(0, 32).   % ascii code for space
 code(-1, 216). % Ø - Player 2
 code(1, 215).  % × - Player 1
 % Pieces codes for each player
-player_piece('Player 1', 1).
-player_piece('Player 2', -1).
+player_piece(1, 1).
+player_piece(-1, -1).
 
 print_header_legend(N, N):-nl.
 print_header_legend(N, F):-
