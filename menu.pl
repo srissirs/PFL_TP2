@@ -165,6 +165,7 @@ play_menu_cc(Size, 2, 2):-
   
 menu :-
   clear,
+  freedom,
   menu_header_format('MAIN MENU'),
   menu_empty_format,
   menu_sec_header_format('Option', 'Details'),
@@ -178,6 +179,12 @@ menu :-
   menu_option_format(0, 'EXIT'),
   menu_empty_format,
   menu_bottom_format,
-
   read_number(0, 5, Number),
   menu_option(Number).
+
+
+freedom :-
+  write('         ____  ____  ____  ____  ____  _____  __  __'), nl,
+  write('        ( ___)(  _ \\( ___)( ___)(  _ \\(  _  )(  \\/  )'), nl,
+  write('         )__)  )   / )__)  )__)  )(_) ))(_)(  )    ( '),nl,
+  write('        (__)  (_)\\_)(____)(____)(____/(_____)(_/\\/\\_)'),nl.
