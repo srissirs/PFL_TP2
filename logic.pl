@@ -27,6 +27,10 @@ valid_moves(GameState, [], ListOfMoves):-
     ListOfMoves = NewList.
 
 %find_valid_moves(+GameState, [+LastX, +LastY], -ListOfMoves)
+valid_moves(GameState, [], ListOfMoves):-
+    length(GameState, L),
+    check_lines(GameState, 0, L, 0, L,[],NewList),
+    ListOfMoves = NewList.
 valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     X is LastX-1,
     LX is LastX+2,
@@ -35,7 +39,6 @@ valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     check_lines(GameState, X, LX, Y, LY,[],List),
     check_if_empty(GameState,List,FinalList),
     ListOfMoves = FinalList.
-
 
 check_adjacent_line(_,_,XF,XF, List, Result) :-  Result = List,!.
 check_adjacent_line(GameState,Y,X,XF ,List, Result) :-
@@ -56,21 +59,22 @@ check_lines(GameState, X,LastX, CurrY,LastY, List, LineList) :-
 
 build_row_board(Size,Size,List, Row):- Row = List,!.
 build_row_board(I,Size,List, Row):-
-append(List,[0],NewList),
-I1 is I+1,
-build_row_board(I1,Size,NewList, Row).
+    append(List,[0],NewList),
+    I1 is I+1,
+    build_row_board(I1,Size,NewList, Row).
 
 build_board(Size,Size,List, Board):- Board = List,!.
 build_board(I,Size,List, Board):-
-build_row_board(0,Size,[],Row),
-append(List,[Row],NewList),
-I1 is I+1,
-build_board(I1,Size,NewList, Board).
+    build_row_board(0,Size,[],Row),
+    append(List,[Row],NewList),
+    I1 is I+1,
+    build_board(I1,Size,NewList, Board).
 
 :- consult('print_board.pl').
 
-get_board(Size, Board):-
-build_board(0,Size,[], Board).
+% initial_state(+Size, -GameState) 
+initial_state(Size, GameState):-
+    build_board(0,Size,[], GameState).
 
 
 

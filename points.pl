@@ -5,8 +5,10 @@ player_piece(GameState, [X, Y], Player):-
     nth0(Y, GameState, Row),
     nth0(X, Row, Value),
     Value == Player.
- 
-count_points(GameState, Player, Points) :-
+
+%% predicate that counts the current points of a Player
+% value(+GameState, +Player, -Points)
+value(GameState, Player, Points) :-
     points_in_rows(GameState, Player, PiecesPointsRows),
     points_in_columns(GameState, Player, PiecesPointsCols),
     points_in_diagonals(GameState, Player, PiecesPointsDiags),
@@ -73,9 +75,9 @@ iterate_columns(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces, PointsFinal)
     ; player_piece(GameState, [X, Y], Player) ->
         Y1 is Y+1,
         NumPieces1 is NumPieces+1,
-        ( NumPieces = 4 ->
+        ( NumPieces1 = 4 ->
             append_cols(PointsAux, [X,Y], PointsAux1)
-        ; NumPieces > 4 ->
+        ; NumPieces1 > 4 ->
             take_last_4(PointsAux, PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_columns(GameState,X,Y1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)

@@ -33,6 +33,14 @@ player_vs_player(GameState, PlayerTurn, LastMove) :-
     player_vs_player(NewGameState, NewPlayerTurn, [NewCol, NewRow]).
 
 
+computer_vs_computer(GameState, PlayerTurn, LastMove) :-
+    print_board(GameState),
+    \+ game_over(GameState,Winner),
+    choose_move(GameState,LastMove, Player, 1, Move),
+    move(GameState, Move, PlayerTurn, NewGameState),
+    change_player(PlayerTurn, NewPlayerTurn),
+    computer_vs_computer(NewGameState, NewPlayerTurn, Move).
+
 % PLAYER VS PLAYER
 %% read_move_input(-Row,-Col)
 read_move_input(PlayerTurn,ListOfMoves,Row,Col) :-

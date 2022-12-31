@@ -1,12 +1,12 @@
 % game_over(+GameState, -Winner)
 %% não há celas vazias (não há zeros)
-game_over(GameState, Winner) :-
+game_over([Board,PlayerTurn], Winner,Level) :-
     number_empty_cells(GameState, EmptyCells),
     EmptyCells < 2,
-    last_move(EmptyCells, PlayerContinue),
+    last_move(EmptyCells, Level, PlayerTurn, PlayerContinue),
     PlayerContinue = 0,
-    count_points(GameState, 1, P1Points),
-    count_points(GameState, -1, P2Points),
+    value(GameState, 1, P1Points),
+    value(GameState, -1, P2Points),
     ( P1Points > P2Points ->
     Winner = 'player 1'
     ; P1Points < P2Points ->
@@ -16,10 +16,18 @@ game_over(GameState, Winner) :-
     write('Player 1 points: '), write(P1Points), nl,
     write('Player 2 points: '), write(P2Points), nl.
 
-last_move(1,PlayerContinue) :- 
+last_move(0,_,_,0).
+last_move(1,0,_,PlayerContinue) :- 
     ask_player_continue(PlayerContinue).
+last_move(1,1,_,PlayerContinue) :- 
+    random_member(PlayerContinue, [0,1]).
+last_move(1,Player,PlayerContinue,2) :- 
+    value(GameState, Player, CurrentPoints),
+    valid_moves(GameState, [], ListOfMoves),
+    value(GameState, Player, NewPoints),!,
+    CurrentPoints > NewPoints -> PlayerContinue = 1;
+    PlayerContinue = 0.
 
-last_move(0,0).
 
 number_empty_cells(GameState, EmptyCells) :-
     length(GameState, BoardSize),
