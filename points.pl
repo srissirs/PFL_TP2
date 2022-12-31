@@ -116,10 +116,10 @@ iterate_right_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPi
         XMov1 is XMov+1,
         YMov1 is YMov+1,
         NumPieces1 is NumPieces+1,
-        ( NumPieces1 = 4 ->
-            append_right_diagonals(PointsAux, [X,Y], PointsAux1)
+        ( NumPieces1 = 4, \+ test_5_right(GameState, [X,Y], Player) ->
+            append_right_diagonals(GameState, Player, PointsAux, [X,Y], PointsAux1)
         ; NumPieces1 > 4 ->
-            take_last_4(PointsAux, [X,Y], PointsAux1)
+            take_last_4(PointsAux, PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_right_diagonals(GameState,X,Y,XMov1,YMov1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)
     ; X1 is X+1, 
@@ -127,7 +127,12 @@ iterate_right_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPi
     ;
     !.
 
-append_right_diagonals(PointsAux, [X,Y], NewPointsAux) :-
+test_5_right(GameState, [X,Y], Player) :-
+    X1 is X-1,
+    Y1 is Y-1,
+    player_piece(GameState, [X1, Y1], Player).
+
+append_right_diagonals(GameState, Player, PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
     X1 is X+1, Y1 is Y+1,
     append(PointsAux1, [[X1,Y1]], PointsAux2),
@@ -151,16 +156,22 @@ iterate_left_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPie
         XMov1 is XMov-1,
         YMov1 is YMov+1,
         NumPieces1 is NumPieces+1,
-        ( NumPieces1 = 4 ->
+        ( NumPieces1 = 4, \+ test_5_left(GameState, [X,Y], Player) ->
             append_left_diagonals(PointsAux, [X,Y], PointsAux1)
         ; NumPieces1 > 4 ->
-            take_last_4(PointsAux, [X,Y], PointsAux1)
+            take_last_4(PointsAux,PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_left_diagonals(GameState,X,Y,XMov1,YMov1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)
     ; X1 is X+1, 
     iterate_left_diagonals(GameState,X1,Y,X1,Y,BoardSize,Player,PointsAux,0,PointsFinal)
     ;
     !.
+
+
+test_5_left(GameState, [X,Y], Player) :-
+    X1 is X+1,
+    Y1 is Y-1,
+    player_piece(GameState, [X1, Y1], Player).
 
 append_left_diagonals(PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
