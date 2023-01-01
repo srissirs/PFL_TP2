@@ -121,7 +121,9 @@ menu_option(2):-
   clear,
   banner('Player vs Computer'),
   menu_board_size(Size),!,
+  clear,
   difficulty_menu(Difficulty),!,
+  clear,
   first_to_play_menu(First),!,
   play_menu_cp(Size,Difficulty,First).
   %clear, menu.
@@ -202,14 +204,12 @@ menu :-
   menu_option_format(1, 'Player vs Player'),
   menu_option_format(2, 'Player vs Computer'),
   menu_option_format(3, 'Computer vs Computer'),
-  menu_option_format(4, 'Game Intructions'),
-  menu_option_format(5, 'Information about project'),
   menu_empty_format,
   menu_option_format(0, 'EXIT'),
   menu_empty_format,
   menu_bottom_format,
 
-  read_number(0, 5, Number),!,
+  read_number(0, 3, Number),!,
   menu_option(Number).
 
 

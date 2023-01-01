@@ -1,12 +1,22 @@
 :- use_module(library(lists)).
-initial_state( [
-  [ 0, 0, 0, 0, 0, 0],
-  [ 0, 0, 0, 0, 0, 0],
-  [ 0, 0, 0, 0, 0, 0],
-  [ 0, 0, 0, 0, 0, 0],
-  [ 0, 0, 0, 0, 0, 0],
-  [ 0, 0, 0, 0, 0, 0]
-]).
+
+build_row_board(Size,Size,List, Row):- Row = List,!.
+build_row_board(I,Size,List, Row):-
+    append(List,[0],NewList),
+    I1 is I+1,
+    build_row_board(I1,Size,NewList, Row).
+
+build_board(Size,Size,List, Board):- Board = List,!.
+build_board(I,Size,List, Board):-
+    build_row_board(0,Size,[],Row),
+    append(List,[Row],NewList),
+    I1 is I+1,
+    build_board(I1,Size,NewList, Board).
+
+% initial_state(+Size, -GameState) 
+initial_state(Size, GameState):-
+    build_board(0,Size,[], GameState).
+
 
 print_n(S,0) :- !.
 print_n(S,N) :-
@@ -15,11 +25,12 @@ print_n(S,N) :-
         print_n(S, D).
 
 % check if board is not rectangular
-check_size(Board, X):-
+% check_size(+Board, -Rows)
+check_size(Board, Rows):-
   nth0(0, Board, Line),
-  length(Line, X),
-  length(Board, Y),
-  X == Y. 
+  length(Line, Columns),
+  length(Board, Rows),
+  Columns == Rows. 
 
 code(0, 32).   % ascii code for space
 code(-1, 216). % Ø - Player 2
@@ -39,6 +50,7 @@ print_line([C|L]) :-
 write(' '),code(C, P),put_code(P), write(' |'),
 print_line(L).
 
+% print_matrix(+GameState,+Iterator,+Lines)
 print_matrix(_,N,N) :- !.
 print_matrix([L|T],I,N) :-
         write(' '),
@@ -49,23 +61,14 @@ print_matrix([L|T],I,N) :-
         D is I+1,
         print_matrix(T,D,N).
 
-print_board(Board) :-
+% predicate that displays current game state 
+% display_game(+GameState)
+display_game(GameState) :-
         nl,
-        check_size(Board, N),
+        check_size(GameState, N),
         write('   |'),
         print_header_legend(0, N),
         print_line_separator(N+1),
-        print_matrix(Board,0,N),!.
+        print_matrix(GameState,0,N),!.
 
-
-% append(P,[[I,Y]],ListOfMoves),
-
-
-row_ListOfMoves(N,N,_,_,_,ListOfMoves) :- !.
-row_ListOfMoves(I,N,Y,L,P,ListOfMoves) :-
-I >= 0,
-append(P,[[I,Y]],ListOfMoves),
-write(ListOfMoves),nl,
-D is I+1,
-row_ListOfMoves(D,N,Y,L,ListOfMoves,NewListOfMoves).
 
