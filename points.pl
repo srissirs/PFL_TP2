@@ -1,13 +1,12 @@
 :- use_module(library(lists)).
 
-%% points
+% verifica se a peça na célula [X,Y] é do Player
 player_piece(GameState, [X, Y], Player):-
     nth0(Y, GameState, Row),
     nth0(X, Row, Value),
     Value == Player.
 
-%% predicate that counts the current points of a Player
-% value(+GameState, +Player, -Points)
+% função principar para calcular os pontos do Player
 value(GameState, Player, Points) :-
     points_in_rows(GameState, Player, PiecesPointsRows),
     points_in_columns(GameState, Player, PiecesPointsCols),
@@ -17,23 +16,23 @@ value(GameState, Player, Points) :-
     remove_duplicates(PiecesPoints, Result),
     length(Result, Points).
 
+% remove valores duplicados numa lista
 remove_duplicates(PiecesPoints, Result) :-
     remove_duplicates(PiecesPoints, [], Result).
-
 remove_duplicates([], _, []).
 remove_duplicates([Piece | Tail], Aux, Result) :-  % checks if the head element of the list is a member of the auxiliary list. If it is, it skips it and continues the recursion with the rest of the list. 
     member(Piece, Aux),
     !,
     remove_duplicates(Tail, Aux, Result).
-
 remove_duplicates([Piece | Tail], Aux, [Piece|Result]) :-
     remove_duplicates(Tail, [Piece | Aux], Result).
 
-%% points in rows 
+% cria uma lista de peças que pertencem a um 4 em linha feito numa linha 
 points_in_rows(GameState, Player, PiecesPoints) :-
     length(GameState, BoardSize),
     iterate_rows(GameState, 0, 0, BoardSize, Player, [], 0, PiecesPoints).
 
+% itera por todas as linhas, à procura de um 4 em linha numa linha
 iterate_rows(GameState,X,BoardSize,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :- PointsFinal = PointsAux,!.
 iterate_rows(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :-
     X >= BoardSize ->
@@ -53,6 +52,8 @@ iterate_rows(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :-
     ;
     !.
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% adiciona à lista de peças com pontos a peça atual (a ser iterada) e as 3 anteriores na linha
 append_rows(PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
     X1 is X-1,
@@ -62,11 +63,12 @@ append_rows(PointsAux, [X,Y], NewPointsAux) :-
     X3 is X2-1,
     append(PointsAux3, [[X3,Y]], NewPointsAux).
 
-% points in columns
+% cria uma lista de peças que pertencem a um 4 em linha feito numa coluna 
 points_in_columns(GameState, Player, PiecesPoints) :-
     length(GameState, BoardSize),
     iterate_columns(GameState, 0, 0, BoardSize, Player, [], 0, PiecesPoints).
 
+% itera por todas as linhas, à procura de um 4 em linha numa coluna
 iterate_columns(GameState,BoardSize,Y,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :- PointsFinal = PointsAux,!.
 iterate_columns(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces, PointsFinal) :-
     Y >= BoardSize ->
@@ -85,6 +87,8 @@ iterate_columns(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces, PointsFinal)
     ;
     !.
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% adiciona à lista de peças com pontos a peça atual (a ser iterada) e as 3 anteriores na coluna
 append_cols(PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
     Y1 is Y-1,
@@ -94,13 +98,15 @@ append_cols(PointsAux, [X,Y], NewPointsAux) :-
     Y3 is Y2-1,
     append(PointsAux3, [[X,Y3]], NewPointsAux).
 
-%points in diagonals
+
+% cria uma lista de peças que pertencem a um 4 em linha feito numa diagonal 
 points_in_diagonals(GameState, Player, PiecesPoints) :-
     length(GameState, BoardSize),
     iterate_right_diagonals(GameState, 0, 0, 0, 0, BoardSize, Player, [], 0, PointsRight),
     iterate_left_diagonals(GameState, 0, 0, 0, 0, BoardSize, Player, [], 0, PointsLeft),
     append(PointsRight, PointsLeft, PiecesPoints).
 
+% itera pelas todas as diagonais (da esquerda para a direita) à procura de um 4 em linha numa diagonal neste sentido
 iterate_right_diagonals(GameState,X,BoardSize,XMov,YMov,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :- PointsFinal = PointsAux,!.
 iterate_right_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :-
     X >= BoardSize ->
@@ -127,11 +133,15 @@ iterate_right_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPi
     ;
     !.
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% testa se a peça a ser iterada tem uma peça do jogador na continuação para cima da diagonal
 test_5_right(GameState, [X,Y], Player) :-
     X1 is X-1,
     Y1 is Y-1,
     player_piece(GameState, [X1, Y1], Player).
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% adiciona à lista de peças com pontos a peça atual (a ser iterada) e as 3 seguintes na diagonal da esquerda para a direita
 append_right_diagonals(GameState, Player, PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
     X1 is X+1, Y1 is Y+1,
@@ -141,6 +151,7 @@ append_right_diagonals(GameState, Player, PointsAux, [X,Y], NewPointsAux) :-
     X3 is X2+1, Y3 is Y2+1,
     append(PointsAux3, [[X3,Y3]], NewPointsAux).
 
+% itera pelas todas as diagonais (da direita para a esquerda) à procura de um 4 em linha numa diagonal neste sentido
 iterate_left_diagonals(GameState,X,BoardSize,XMov,YMov,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :- PointsFinal = PointsAux,!.
 iterate_left_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :-
     X >= BoardSize ->
@@ -167,12 +178,15 @@ iterate_left_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPie
     ;
     !.
 
-
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% testa se a peça a ser iterada tem uma peça do jogador na continuação para cima da diagonal
 test_5_left(GameState, [X,Y], Player) :-
     X1 is X+1,
     Y1 is Y-1,
     player_piece(GameState, [X1, Y1], Player).
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 4;
+% adiciona à lista de peças com pontos a peça atual (a ser iterada) e as 3 seguintes na diagonal da esquerda para a direita
 append_left_diagonals(PointsAux, [X,Y], NewPointsAux) :-
     append(PointsAux, [[X,Y]], PointsAux1),
     X1 is X-1, Y1 is Y+1,
@@ -182,6 +196,8 @@ append_left_diagonals(PointsAux, [X,Y], NewPointsAux) :-
     X3 is X2-1, Y3 is Y2+1,
     append(PointsAux3, [[X3,Y3]], NewPointsAux).
 
+% chamada quando NumPieces (número de peças seguidas do jogador) é igual a 5;
+% retira lista de peças com pontos as últimas 4 peças, pois pertencem a um 4+ em linha
 take_last_4(PointsAux, NewPointsAux) :- 
     append(NewPointsAux, Rest, PointsAux),
     length(Rest, 4).

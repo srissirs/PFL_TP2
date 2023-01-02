@@ -3,8 +3,9 @@
 :- consult('menu.pl').
 :- consult('points.pl').
 :- consult('game_over.pl').
-:- consult('main.pl').
 :- consult('read_move_input').
+:- consult('move.pl').
+:- consult('main.pl').
 
 % play/0
 % first predicate, returns menu

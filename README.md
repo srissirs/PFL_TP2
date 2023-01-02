@@ -15,7 +15,7 @@
 SICStus Prolog
 
 ### Execução
-Abrir o SICStus Prolog e clicar em File > Consult > play.pl. Para começar o jogo, correr play.
+Abrir o SICStus Prolog e clicar em File > Consult > play.pl. Para começar o jogo, correr `play.`.
 
 
 # Descrição do jogo:
@@ -39,7 +39,9 @@ O jogo termina quando o tabuleiro estiver cheio de pedras. O último jogador tem
 #  Lógica do Jogo
 
 
-## Loop principal
+## Loop principal de cada modo
+Ficheiro: **modes.pl**.
+
 Os 3 modos, player vs player, computador vs player e computador vs computador, recebem como argumentos `GameState`, `PlayerTurn` e `LastMove`. Na sua implementação, é executado o seguinte loop:
 1) O tabuleiro do estado atual do jogo é impresso no ecrã -> `print_board(+GameState)`;
 2) É verificado se o jogo acabou -> `\+ game_over(+GameState,-Winner)`. No caso afirmativo, o loop é interrompido;
@@ -50,9 +52,12 @@ Os 3 modos, player vs player, computador vs player e computador vs computador, r
 7) Muda a vez do jogador -> `change_player(+PlayerTurn, -NewPlayerTurn)`;
 8) É chamado o loop em questão novamente.
 
-## Print Board
+## Print board
+Ficheiro: **print_board.pl**.
 
 ## Game Over
+Ficheiro: **print_board.pl**.
+
 A função `game_over(+GameState,-Winner,+Level)` verifica se o jogo está terminado ou não.
 Começa por conferir se não há mais células vazias (representadas por zeros) no tabuleiro de jogo, ou seja, se o jogo acabou. Havendo apenas uma célula vazia, a continuidade do jogo depende da decisão do jogador atual. Se o jogo acabou, a função determina o vencedor, comparando os pontos de cada jogador.
 
@@ -65,6 +70,8 @@ A função também implementa a possibilidade de continuar o jogo se houver apen
 A função `ask_player_continue(-PlayerContinue)` pergunta ao jogador se ele deseja continuar o jogo, escrevendo 0 se não quiser continuar e 1 no caso contrário. É implementada com o uso da repetição com falha ("repeat"), para garantir que o jogador responde corretamente. A função `validate_player_continue` valida a resposta do jogador, garantindo que ele digita apenas 0 ou 1.
 
 ## Read move input
+Ficheiro: **read_move_input.pl**.
+
 A função `read_move_input(+PlayerTurn, +ListOfMoves, -NewRow, -NewCol)` é usada para ler o input do jogador, que corresponde à linha e coluna da célula onde ele deseja colocar a nova peça. Começa por imprimir qual é o jogador atual, com a função `write_player_turn`, e, seguidamente, lê o input do jogador, com a função `read_move_input_aux`.
 
 Esta função lê a linha e a coluna introduzidas e verifica se são números. Se não forem, é solicitado que o jogador insira um novo input.
@@ -73,8 +80,11 @@ Depois de ser lido, a função `validate_move(+Row, +Col, +ListOfMoves)` é cham
 
 
 ## Choose move
+Ficheiro: **logic.pl**.
 
 ## Move
+Ficheiro: **move.pl**.
+
 A função `move(+GameState, +Move, +Player, -NewGameState)` atualiza o estado do jogo com a introdução de uma nova peça de um jogador. 
 O parâmetro `Move` é composto pelas coordenadas da nova peça - `[X,Y]`. 
 
@@ -82,9 +92,14 @@ Começa por obter a lista que representa a linha onde estará localizada a nova 
 
 Finalmente, a função `move` retorna o novo estado do jogo com o nova peça.
 
-## Pontos
+## Points
+Ficheiro: **points.pl**.
+
 A função principal é `value(+GameState, +Player, -Points)`, que calcula o número de pontos de um jogador num determinado estado do jogo. Isto é feito chamando as funções `points_in_rows`, `points_in_columns` e `points_in_diagonals`, que são responsáveis por criar uma lista de peças com pontos, logo, que pertencem a um 4 em linha feito em linhas, colunas e diagonais do tabuleiro, respetivamente.
 
 Cada uma dessas funções itera pelo tabuleiro a partir das funções `iterate_rows`, `iterate_columns` e `iterate_right_diagonals` e `iterate_left_diagonals`, respetivamente, que têm como base verificar se cada célula pertence ao jogador em questão. Nestas funções, se uma célula pertence ao jogador a variável `NumPieces` é incrementada, pois guarda o número de células do jogador seguidas. Uma vez que este número chega a 4, são chamadas as funções `append_rows` e `append_columns`, respetivamente, que adicionam a peça neste momento a ser iterada e as 3 anteriores à lista de peças com pontos. Se o `NumPieces` chega a 5, é chamada a função `take_last_4`, que retira os últimos 4 elementos da lista das peças com pontos. Se, por sua vez, uma célula não pertence ao jogador, a contagem é reiniciada.
 
 Depois que das funções `points_in_rows`, `points_in_columns` e `points_in_diagonals` serem chamadas, as listas de peças com pontos são concatenadas e as duplicadas são removidas, usando a função `remove_duplicates`. Finalmente, o tamanho da lista de peças com pontos é contado e é retornado como o número de pontos do jogador.
+
+## Menu
+Ficheiro: **menu.pl**.
