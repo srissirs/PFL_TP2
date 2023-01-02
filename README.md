@@ -36,36 +36,6 @@ Após este movimento, os jogadores alternam, colocando as suas pedras em célula
 
 O jogo termina quando o tabuleiro estiver cheio de pedras. O último jogador tem o direito de não jogar na sua última vez (e deixar a última célula vazia) se reduzir a sua pontuação ao colocar a última pedra .
 
-# Lógica do Jogo
-
-## Representação interna do estado do jogo
-
-
-
-## Execução de Jogadas
-
-## Lista de Jogadas Válidas
-
-Para determinar a lista de jogadas válidas utilizámos o predicado  *valid_moves(+GameState, +LastMove, -ListOfMoves)* que primeiro verifica se existem casas vazias adjacentes à última jogada. Caso assim seja, retorna a lista com essas células; senão o jogador pode jogar para qualque vazia do tabuleiro, pelo que é retornada uma lista com todas as casas vazias do mesmo.
-
-## Final do Jogo
-
-## Avaliação do Tabuleiro
-
-## Jogada do Computador
-
-Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado *choose_move(+GameState, +LastMove, +Player, +Level, -Move)*. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
-
-# Conclusões
-
-# Bibliografia
-
-Recursos utlizados:
-
-- https://www.swi-prolog.org/
-- https://www.youtube.com/watch?v=SwoZabsIzRg&ab_channel=ThePowerofProlog
-
-=======
 #  Lógica do Jogo
 
 ## Loop principal de cada modo
@@ -159,5 +129,18 @@ A função principal é `value(+GameState, +Player, -Points)`, que calcula o nú
 Cada uma dessas funções itera o tabuleiro a partir das funções `iterate_rows`, `iterate_columns` e `iterate_right_diagonals` e `iterate_left_diagonals`, respetivamente, que têm como base verificar se cada célula pertence ao jogador em questão. Nestas funções, se a célula a ser iterada pertence ao jogador, a variável `NumPieces` é incrementada, pois guarda o número de células do jogador seguidas. Uma vez que este número chega a 4, são chamadas as funções `append_rows`, `append_columns`, append_right_diagonals e append_left_diagonals, respetivamente, que adicionam a peça a ser iterada e as 3 peças imediatamente anteriormente iteradas à lista de peças com pontos. Se o `NumPieces` chega a 5 é chamada a função `take_last_4`, que retira os últimos 4 elementos da lista das peças com pontos. Se, por sua vez, uma célula não pertence ao jogador, a contagem é reiniciada.
 
 Depois das funções `points_in_rows`, `points_in_columns` e `points_in_diagonals` serem chamadas, as listas de peças com pontos são concatenadas e as peças duplicadas são removidas, usando a função `remove_duplicates`. Finalmente, o tamanho da lista é retornado como o número de pontos do jogador.
+
+
+
+# Conclusões
+
+# Bibliografia
+
+Recursos utlizados:
+
+- https://www.swi-prolog.org/
+- https://www.youtube.com/watch?v=SwoZabsIzRg&ab_channel=ThePowerofProlog
+
+=======
 
 
