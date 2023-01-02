@@ -98,3 +98,6 @@ A função principal é `value(+GameState, +Player, -Points)`, que calcula o nú
 Cada uma dessas funções itera o tabuleiro a partir das funções `iterate_rows`, `iterate_columns` e `iterate_right_diagonals` e `iterate_left_diagonals`, respetivamente, que têm como base verificar se cada célula pertence ao jogador em questão. Nestas funções, se a célula a ser iterada pertence ao jogador, a variável `NumPieces` é incrementada, pois guarda o número de células do jogador seguidas. Uma vez que este número chega a 4, são chamadas as funções `append_rows`, `append_columns`, append_right_diagonals e append_left_diagonals, respetivamente, que adicionam a peça a ser iterada e as 3 peças imediatamente anteriormente iteradas à lista de peças com pontos. Se o `NumPieces` chega a 5 é chamada a função `take_last_4`, que retira os últimos 4 elementos da lista das peças com pontos. Se, por sua vez, uma célula não pertence ao jogador, a contagem é reiniciada.
 
 Depois das funções `points_in_rows`, `points_in_columns` e `points_in_diagonals` serem chamadas, as listas de peças com pontos são concatenadas e as peças duplicadas são removidas, usando a função `remove_duplicates`. Finalmente, o tamanho da lista é retornado como o número de pontos do jogador.
+
+## Menu
+Ficheir
