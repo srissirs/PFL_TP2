@@ -16,7 +16,7 @@ initial_state(Size, GameState):-
     build_board(0,Size,[], GameState).
 
 
-print_n(S,0) :- !.
+print_n(_,0) :- !.
 print_n(S,N) :-
         write(S),
         D is N-1,
@@ -68,5 +68,3 @@ display_game(GameState) :-
         print_header_legend(0, N),
         print_line_separator(N+1),
         print_matrix(GameState,0,N),!.
-
-

@@ -1,6 +1,7 @@
-% determina se o jogo está terminado (sem células vazias 
-% ou com um célula vazia mas o jogador da última jogada não a quer realiazar)
-% e, no caso afirmativo, determina o vencedor
+% determines whether the game is finished (with no empty cells or with 
+% an empty cell, but the player making the last move does not want to make it)
+% and, if so, determines the winner
+% game_over(+GameState, +CurrentPlayerPiece, +CurrentPlayerLevel, -Winner) :-
 game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
     number_empty_cells(GameState, EmptyCells),
     EmptyCells < 2,
@@ -17,11 +18,11 @@ game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
     write('Player 1 points: '), write(P1Points), nl,
     write('Player 2 points: '), write(P2Points), nl, sleep(5), menu.
 
-% no caso de ser a última jogada do jogo:
-% -> humano: pergunta se quer jogar
-% -> computador random: escolhe aleatoriamente entre a jogar ou não
-% -> computador inteligente: pondera se melhora os pontuação jogar ou não
-% last (EmptyCells, CurrentPlayerLevel, CurrentPlayerPiece, PlayerContinue)
+% in case it is the last move of the game:
+% -> human: asks if they want to play
+% -> computer level 1: randomly chooses between playing or not
+% -> computer level 2: considers if it improves the scores by playing or not
+% last_move(+EmptyCells, +CurrentPlayerLevel, +CurrentPlayerPiece, -PlayerContinue)
 last_move(0,_,_,0).
 last_move(1,0,_,PlayerContinue) :- 
     ask_player_continue(PlayerContinue).
@@ -34,13 +35,15 @@ last_move(1,2,CurrentPlayerPiece,PlayerContinue) :-
     CurrentPoints > NewPoints -> PlayerContinue = 1;
     PlayerContinue = 0.
 
-% calcula o número de células vazias (iguais a 0) no tabuleiro
+% calculates the number of empty cells o(equal to 0) on the board
+% number_empty_cells(+GameState, -EmptyCells)
 number_empty_cells(GameState, EmptyCells) :-
     length(GameState, BoardSize),
     iterate_board(GameState,0,0,BoardSize,0,EmptyCells).
 
-% itera pelo tabuleiro, calculando o número de células vazias
-iterate_board(GameState,X,BoardSize,BoardSize,EmptyCellsAux,EmptyCellsFinal) :- EmptyCellsFinal = EmptyCellsAux, !.
+% iterates through the board, incrementing each time there's an empty cell
+% iterate_board(+GameState, +X, +Y, +BoardSize, +EmptyCellsAux, -EmptyCellsFinal)
+iterate_board(_,_,BoardSize,BoardSize,EmptyCellsAux,EmptyCellsFinal) :- EmptyCellsFinal = EmptyCellsAux, !.
 iterate_board(GameState,X,Y,BoardSize,EmptyCellsAux,EmptyCellsFinal) :-
     X >= BoardSize
     -> Y1 is Y+1, iterate_board(GameState,0,Y1,BoardSize,EmptyCellsAux,EmptyCellsFinal)
@@ -50,7 +53,8 @@ iterate_board(GameState,X,Y,BoardSize,EmptyCellsAux,EmptyCellsFinal) :-
     X1 is X+1,
     iterate_board(GameState,X1,Y,BoardSize,NewEmptyCellsAux,EmptyCellsFinal).
 
-% pergunta ao humano se quer fazer a última jogada
+% asks the human player if he wants to make the last move
+% ask_player_continue(-PlayerContinue)
 ask_player_continue(PlayerContinue) :-
     repeat,
     write('Do you want to play? (1 for yes 0 for no) '),
@@ -58,6 +62,7 @@ ask_player_continue(PlayerContinue) :-
     validate_player_continue(PlayerContinue),
     !.
 
-% verifica se a resposta ask_player_continue foi a pretendida
+% checks if the answer to ask_player_continue is valid
+%validate_player_continue(+PlayerContinue).
 validate_player_continue(0).
 validate_player_continue(1).

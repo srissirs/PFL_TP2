@@ -39,24 +39,24 @@ O jogo termina quando o tabuleiro estiver cheio de pedras. O último jogador tem
 #  Lógica do Jogo
 
 ## Representação interna do estado do jogo
-Ficheiro: **modes.pl**.
+Ficheiro: **players.pl**.
 
-Os 3 modos, player vs player, computador vs player e computador vs computador, recebem como argumentos `GameState`, `PlayerTurn` e `LastMove`. Na sua implementação, é executado o seguinte loop:
-1) O tabuleiro do estado atual do jogo é impresso no ecrã -> `print_board(+GameState)`;
-2) É verificado se o jogo acabou -> `\+ game_over(+GameState,-Winner)`. No caso afirmativo, o loop é interrompido;
-3) É criada a lista de movimentos válidos para o jogador atual -> `valid_moves(+GameState, +LastMove, -ListOfMoves)`;
-4) No caso de ser a vez do player, é lido e validado o input para a sua jogada -> `read_move_input(+PlayerTurn, +ListOfMoves, -NewRow, -NewCol)`;
-5) No caso de ser a vez do computador, é escolhido o seu movimento, que varia a sua implementação no caso de ser um computador inteligente -> `choose_move(+GameState, +LastMove, +PlayerTurn, +Level, -Move)`;
-6) É feita a nova jogada, atualizando o estado do jogo -> `move(+GameState, +Move, +PlayerTurn, -NewGameState)`;
+Existem 3 possíveis jogadores: humano (representado por 0), computador nível 1 (computador aleatório, representado por 1) e computador nível 2 (computador inteligente, representado por 2). O utilizador é questionado sobre qual o modo de jogo que pretende jogar (humano vs humano, humano vs computador ou computador vs computador). Se houver pelo menos um jogador que é computador, o utilizador é questionado sobre qual o nível do(s) computador(es) e quem deve começar primeiro (isto é, quem será o jogador 1). Finalmente, são guardados os tipos do jogador 1 e jogador 2 (que, então, serão 0, 1 ou 2).
+O loop principal do jogo é `game(+GameState, +CurrentPlayerType, +OtherPlayerType, +CurrentPlayerPiece, +LastMove)`, cuja implementação depende do tipo do player atual (CurrentPlayerType), mas todas seguem praticamente a mesma sequência:
+1) O tabuleiro do estado atual do jogo é impresso no ecrã -> `display_game(+GameState)`;
+2) É verificado se o jogo acabou -> `\+ game_over(+GameState, +CurrentPlayerPiece, +CurrentPlayerLevel, -Winner)`. No caso afirmativo, o loop é interrompido;
+4) No caso de ser a vez do humano, é lido e validado o input para a nova jogada -> `move_input(+GameState, +PlayerTurn, +LastMove, -Move)`;
+5) No caso de ser a vez do computador, é escolhido o seu movimento -> `choose_move(+GameState, +LastMove, +Level, -Move)`.
+6) É feita a nova jogada, atualizando o estado do jogo -> `move(+GameState, +Move, +PlayerPiece, -NewGameState)`;
 7) Muda a vez do jogador -> `change_player(+PlayerTurn, -NewPlayerTurn)`;
-8) É chamado o loop em questão novamente.
+8) É chamado um novo loop de `game`, mas permutando CurrentPlayerType e OtherPlayerType e atualizando o resto dos parâmetros com o calculado.
 
 ## Visualização do estado de jogo
 Ficheiros: **print_board.pl** **menu.pl** 
 
-O predicado utilizado para visualizar o estado atual do jogo é o *display_game(+GameState)*. Este recebe o valor *GameState*, uma lista de listas com os valores 1 (peças do jogador 1), -1 (peças do jogador 2) ou 0 (casa vazia do tabuleiro). Em primeiro lugar, o predicado confirma que o tabuleiro recebido é, de facto quadrangular (tal como indica as regras do jogo), e só então imprime as limitações do tabuleiro assim como as legendas das colunas. De seguida, é chamada o predicado *print_matrix(+GameState,+Iterator,+Lines)* que imprime todas as linhas do tabuleiro com as peças, incluindo a legenda dessa mesma linha.
+O predicado utilizado para visualizar o estado atual do jogo é o `display_game(+GameState)`. Este recebe o valor *GameState*, uma lista de listas com os valores 1 (peças do jogador 1), -1 (peças do jogador 2) ou 0 (casa vazia do tabuleiro). Em primeiro lugar, o predicado confirma que o tabuleiro recebido é, de facto quadrangular (tal como indica as regras do jogo), e só então imprime as limitações do tabuleiro assim como as legendas das colunas. De seguida, é chamada o predicado `print_matrix(+GameState,+Iterator,+Lines)` que imprime todas as linhas do tabuleiro com as peças, incluindo a legenda dessa mesma linha.
 
-O jogo implementado permite também a criação de um tabuleiro flexível, dando a possibilidade aos jogadores de escolherem as dimensões do mesmo (4-24). Para tal é usada a função *initial_state(Size, GameState)* que, dadas as dimensões desejadas, constrói uma lista de listas com o valor 0 (representativo da célula vazia).
+O jogo implementado permite também a criação de um tabuleiro flexível, dando a possibilidade aos jogadores de escolherem as dimensões do mesmo (4-24). Para tal é usada a função `initial_state(Size, GameState)` que, dadas as dimensões desejadas, constrói uma lista de listas com o valor 0 (representativo da célula vazia).
 
 Para poder decidir o tipo de jogo que pretende jogar, implementámos também um menu que permite escolher entre os três tipos de jogo disponíveis (Jogador vs Jogador - PxP; Jogador vs Computador - PxC ; Computador vs Computador - CxC):
 
@@ -79,7 +79,7 @@ Nos menus implementámos também um mecanismo de prevenção de erros, onde apen
 ## Lista de Jogadas Válidas
 Ficheiro: **logic.pl**.
 
-Para determinar a lista de jogadas válidas utilizámos o predicado  *valid_moves(+GameState, +LastMove, -ListOfMoves)* que primeiro verifica se existem casas vazias adjacentes à última jogada. Caso assim seja, retorna a lista com essas células; senão o jogador pode jogar para qualque vazia do tabuleiro, pelo que é retornada uma lista com todas as casas vazias do mesmo.
+Para determinar a lista de jogadas válidas utilizámos o predicado `valid_moves(+GameState, +LastMove, -ListOfMoves)` que primeiro verifica se existem casas vazias adjacentes à última jogada. Caso assim seja, retorna a lista com essas células; senão o jogador pode jogar para qualque vazia do tabuleiro, pelo que é retornada uma lista com todas as casas vazias do mesmo.
 
 
 ## Final do Jogo
@@ -97,25 +97,27 @@ A função também implementa a possibilidade de continuar o jogo se houver apen
 A função `ask_player_continue(-PlayerContinue)` pergunta ao jogador se ele deseja continuar e realizar a última jogada, introduzindo 0 no caso negativo e 1 no caso positivo. É implementada com o uso da repetição com falha (`repeat`), para garantir que o jogador responde corretamente. A função `validate_player_continue` valida a resposta do jogador, garantindo que ele introduz apenas 0 ou 1.
 
 ## Ler jogada de um humano
-Ficheiro: **read_move_input.pl**.
+Ficheiro: **move_input.pl**.
 
-A função `read_move_input(+PlayerTurn, +ListOfMoves, -NewRow, -NewCol)` é usada para ler o input da nova jogada do jogador, que corresponde à linha e coluna da célula onde ele deseja colocar a nova peça. Começa por imprimir qual é o jogador atual, com a função `write_player_turn`, e, seguidamente, lê o input do jogador, com a função `read_move_input_aux`.
+A função `move_input(+GameState, +PlayerTurn, +LastMove, -Move)` começa por chamar `valid_moves`, para obter a lista de movimentos válidos para o jogador atual, e depois chamda `read_move_option`.
 
-A função `read_move_input_aux` lê a linha e a coluna introduzidas e verifica se são números. Se não forem números, é solicitado ao jogador que insira um novo input.
+A função `read_move_input(+PlayerTurn, +ListOfMoves, Move)` é usada para ler o input da nova jogada do jogador, que corresponde à coluna e linha da célula onde ele deseja colocar a nova peça. Começa por imprimir qual é o jogador atual, com a função `write_player_turn`, e, seguidamente, lê o input do jogador, com a função `read_move_input_aux`.
 
-Depois de lido, a função `validate_move(+Row, +Col, +ListOfMoves)` é chamada para verificar se o movimento é válido. Verifica se a linha e a coluna introduzidas pelo jogador estão presentes na lista de movimentos válidos, que é passada como parâmetro da função. Se o movimento for inválido, a função `validate_move` imprime uma mensagem de erro, fazendo com que o loop da função `read_move_input` seja executado novamente. Se o movimento for válido, o loop é interrompido e a função `read_move_input` retorna os valores da linha e da coluna introduzidos pelo jogador.
+A função `read_move_input_aux` lê a coluna e a linha introduzidas e verifica se são números. Se não forem números, `read_move_input_aux` imprime uma mensagem de erro, fazendo com que o loop da função `read_move_input` seja executado novamente e é solicitado ao jogador que insira um novo input.
+
+Depois de lido, a função `validate_move(+Row, +Col, +ListOfMoves)` é chamada para verificar se o movimento é válido. Verifica se a coluna e a linha introduzidas pelo jogador estão presentes na lista de movimentos válidos, que é passada como parâmetro da função. É impressa a mensagem de erro de `read_move_input_aux`, e `read_move_input` é então executado novamente. Se o movimento for válido, o loop é interrompido e a função `read_move_input` retorna os valores da linha e da coluna introduzidos pelo jogador.
 
 ## Jogada do Computador
 Ficheiro: **bot.pl**.
 
-Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado *choose_move(+GameState, +LastMove, +Player, +Level, -Move)*. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
+Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado `choose_move(+GameState, +LastMove, +Level, -Move)`. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
 
 
 ## Execução de Jogadas
 Ficheiro: **move.pl**.
 
-A função `move(+GameState, +Move, +Player, -NewGameState)` atualiza o estado do jogo com a introdução de uma nova peça de um jogador. 
-O parâmetro `Move` é composto pelas coordenadas da nova peça -> `[X,Y]`. 
+A função `move(+GameState, +Move, +PlayerPiece, -NewGameState)` atualiza o estado do jogo com a introdução de uma nova peça de um jogador. 
+O parâmetro `Move` é composto pelas coordenadas da nova peça, `[X,Y]`. 
 
 Começa por obter a lista que representa a linha onde estará localizada a nova peça e é criado o novo valor da célula, que é igual ao valor da peça do jogador atual, passado como parâmetro da função. Posteriormente, é chamada a função `add_piece` 2 vezes, que primeiramente insere o novo valor na posição X da lista obtida (que representa a linha) e depois insere a nova linha na lista de listas que representa o estado do jogo.
 
@@ -124,16 +126,16 @@ Finalmente, a função `move` retorna o novo estado do jogo com o nova peça.
 ## Avaliação do Tabuleiro
 Ficheiro. **points.pl**.
 
-A função principal é `value(+GameState, +Player, -Points)`, que calcula o número de pontos de um jogador num determinado estado do jogo. Isto é feito chamando as funções `points_in_rows`, `points_in_columns` e `points_in_diagonals`, que são responsáveis por criar uma lista de peças com pontos nas linhas, colunas e diagonais do tabuleiro, respetivamente.
+A função principal `value(+GameState, +Player, -Points)` calcula o número de pontos de um jogador num determinado estado do jogo. Isto é feito chamando as funções `points_in_rows`, `points_in_columns` e `points_in_diagonals`, que são responsáveis por criar uma lista de peças com pontos nas linhas, colunas e diagonais do tabuleiro, respetivamente.
 
-Cada uma dessas funções itera o tabuleiro a partir das funções `iterate_rows`, `iterate_columns` e `iterate_right_diagonals` e `iterate_left_diagonals`, respetivamente, que têm como base verificar se cada célula pertence ao jogador em questão. Nestas funções, se a célula a ser iterada pertence ao jogador, a variável `NumPieces` é incrementada, pois guarda o número de células do jogador seguidas. Uma vez que este número chega a 4, são chamadas as funções `append_rows`, `append_columns`, append_right_diagonals e append_left_diagonals, respetivamente, que adicionam a peça a ser iterada e as 3 peças imediatamente anteriormente iteradas à lista de peças com pontos. Se o `NumPieces` chega a 5 é chamada a função `take_last_4`, que retira os últimos 4 elementos da lista das peças com pontos. Se, por sua vez, uma célula não pertence ao jogador, a contagem é reiniciada.
+Cada uma dessas funções itera o tabuleiro a partir das funções `iterate_rows`, `iterate_columns` e `iterate_right_diagonals` e `iterate_left_diagonals`, respetivamente, que têm como base verificar se cada célula pertence ao jogador em questão. Nestas funções, se a célula a ser iterada pertence ao jogador, a variável `NumPieces` é incrementada, pois guarda o número de células do jogador seguidas. Uma vez que este número chega a 4, são chamadas as funções `append_rows`, `append_columns`, `append_right_diagonals` e `append_left_diagonals`, respetivamente, que adicionam as 4 peças à lista de peças com pontos. Se o `NumPieces` chega a 5 é chamada a função `take_last_4`, que retira os últimos 4 elementos da lista das peças com pontos. Se, por sua vez, uma célula não pertence ao jogador, a contagem é reiniciada.
 
 Depois das funções `points_in_rows`, `points_in_columns` e `points_in_diagonals` serem chamadas, as listas de peças com pontos são concatenadas e as peças duplicadas são removidas, usando a função `remove_duplicates`. Finalmente, o tamanho da lista é retornado como o número de pontos do jogador.
 
 # Conclusões
 
 Uma das melhorias que gostaríamos de ter implementado é a representação das colunas do tabuleiro com letras, assim como a forma como as células são identificadas quando o jogador escolhe a sua próxima jogada, para que exista menos confusão entre colunas/linhas.
-Uma futura implementação seria também uma espécie de nível intermédio entre o nível 1 e 2, em que o bot ia alternadamente escolhendo a abordagem aleatória e greedy para cada jogada.
+Uma futura implementação seria também uma espécie de nível intermédio entre o nível 1 e 2, em que o bot escolha aleatoriamente entre a abordagem aleatória e greedy para cada jogada.
 Por último, teríamos gostado de dar a possibilidade ao jogador de voltar a repetir o jogo após ver a pontuação, em vez de redirecioná-lo diretamente para o menu.
 
 # Bibliografia
@@ -141,6 +143,8 @@ Por último, teríamos gostado de dar a possibilidade ao jogador de voltar a rep
 Recursos utlizados:
 
 - https://www.swi-prolog.org/
+- https://www.iggamecenter.com/en/rules/freedom
+- https://freedomtable.wordpress.com/
 - https://www.youtube.com/watch?v=SwoZabsIzRg&ab_channel=ThePowerofProlog
 
 =======

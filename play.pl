@@ -10,16 +10,16 @@
 :- consult('move_input.pl').
 :- consult('move.pl').
 :- consult('bot.pl').
-:- consult('modes.pl').
+:- consult('players.pl').
 
-% start_game(+GameState, +Player1Type, +Player2Type)
 % starts a game with Player1 vs Player2
+% start_game(+GameState, +Player1Type, +Player2Type)
 start_game(GameState, Player1Type, Player2Type):-
   clear, 
   game(GameState, Player1Type, Player2Type, 1, []).
 
-% play/0
 % first predicate, returns menu
+% play/0
 play :-
   clear,
   menu.

@@ -141,14 +141,16 @@ menu_option(3):-
   play_menu_cc(Size, Difficulty1, Difficulty2).
   %clear, menu.
 
-%%%  PLAYER vs PLAYER
+%%%  PLAYER vs PLAYER~
+% play_menu_pp(+BoardSize)
 play_menu_pp(Size):-
   initial_state(Size,GameState),
   start_game(GameState, 0, 0).
 
 %%%  PLAYER vs COMPUTER
+% play_menu_cp(+BoardSize, +Level, +PlayerTurn)
+
 % Human plays first with level 1 computer
-% play_menu_cp(+SizeBoard, +Difficulty, +PlayerTurn)
 play_menu_cp(Size, 1, 1):-
   initial_state(Size,GameState),
   start_game(GameState, 0, 1).
@@ -169,6 +171,8 @@ play_menu_cp(Size, 2, 2):-
   start_game(GameState, 2, 0).
 
 %%%  COMPUTER vs COMPUTER
+% play_menu_cc(+BoardSize, LevelPlayer1, LevelPlayer2)
+
 % Computer level 1 vs computer level 1
 play_menu_cc(Size, 1, 1):-
   initial_state(Size,GameState),
@@ -179,10 +183,12 @@ play_menu_cc(Size, 1, 2):-
   initial_state(Size,GameState),
   start_game(GameState, 1, 2).
 
+% Computer level 2 vs computer level 1
 play_menu_cc(Size, 2, 1):-
   initial_state(Size,GameState),
   start_game(GameState, 2, 1).
 
+% Computer level 2 vs computer level 2
 play_menu_cc(Size, 2, 2):-
   initial_state(Size,GameState),
   start_game(GameState, 2, 2).
@@ -212,4 +218,3 @@ freedom :-
   write('      ( ___)(  _ \\( ___)( ___)(  _ \\(  _  )(  \\/  )'), nl,
   write('       )__)  )   / )__)  )__)  )(_) ))(_)(  )    ( '),nl,
   write('      (__)  (_)\\_)(____)(____)(____/(_____)(_/\\/\\_)'),nl.
-

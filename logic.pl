@@ -63,6 +63,3 @@ valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     check_for_empty_cells(GameState, X, LX, Y, LY,[],AdjacentListOfMoves),
     check_if_empty(GameState,AdjacentListOfMoves,FinalList),
     ListOfMoves = FinalList.
-
-
-
