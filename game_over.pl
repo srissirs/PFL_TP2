@@ -5,7 +5,7 @@
 game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
     number_empty_cells(GameState, EmptyCells),
     EmptyCells < 2,
-    last_move(EmptyCells, CurrentPlayerLevel, CurrentPlayerPiece, PlayerContinue),!,
+    last_move(EmptyCells, CurrentPlayerLevel, CurrentPlayerPiece,GameState, PlayerContinue),!,
     PlayerContinue == 0,
     value(GameState, 1, P1Points),
     value(GameState, -1, P2Points),
@@ -23,15 +23,17 @@ game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
 % -> computer level 1: randomly chooses between playing or not
 % -> computer level 2: considers if it improves the scores by playing or not
 % last_move(+EmptyCells, +CurrentPlayerLevel, +CurrentPlayerPiece, -PlayerContinue)
-last_move(0,_,_,0).
-last_move(1,0,_,PlayerContinue) :- 
+last_move(0,_,_,_,0).
+last_move(1,0,_,_,PlayerContinue) :- 
     ask_player_continue(PlayerContinue).
-last_move(1,1,_,PlayerContinue) :- 
+last_move(1,1,_,_,PlayerContinue) :- 
     random_member(PlayerContinue, [0,1]).
-last_move(1,2,CurrentPlayerPiece,PlayerContinue) :- 
+last_move(1,2,CurrentPlayerPiece,GameState,PlayerContinue) :- 
     value(GameState, CurrentPlayerPiece, CurrentPoints),
     valid_moves(GameState, [], ListOfMoves),
-    value(GameState, CurrentPlayerPiece, NewPoints),!,
+    nth0(0, ListOfMoves, Move),
+    move(GameState, Move, CurrentPlayerPiece, NewGameState),
+    value(NewGameState, CurrentPlayerPiece, NewPoints),!,
     CurrentPoints > NewPoints -> PlayerContinue = 1;
     PlayerContinue = 0.
 
