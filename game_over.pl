@@ -4,8 +4,8 @@
 game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
     number_empty_cells(GameState, EmptyCells),
     EmptyCells < 2,
-    last_move(EmptyCells, CurrentPlayerLevel, CurrentPlayerPiece, PlayerContinue),
-    PlayerContinue = 0,
+    last_move(EmptyCells, CurrentPlayerLevel, CurrentPlayerPiece, PlayerContinue),!,
+    PlayerContinue == 0,
     value(GameState, 1, P1Points),
     value(GameState, -1, P2Points),
     ( P1Points > P2Points ->
@@ -15,7 +15,7 @@ game_over(GameState, CurrentPlayerPiece, CurrentPlayerLevel, Winner) :-
     ; Winner = 'tie' ),
     write('Winner: '), write(Winner), nl,
     write('Player 1 points: '), write(P1Points), nl,
-    write('Player 2 points: '), write(P2Points), nl.
+    write('Player 2 points: '), write(P2Points), nl, sleep(5), menu.
 
 % no caso de ser a última jogada do jogo:
 % -> humano: pergunta se quer jogar

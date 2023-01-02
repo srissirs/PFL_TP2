@@ -137,7 +137,7 @@ menu_option(3):-
   difficulty_menu( Difficulty1),
   clear,
   banner('Difficulty for Player 2'),
-  difficulty_menu(Difficulty2),
+  difficulty_menu(Difficulty2),!,
   play_menu_cc(Size, Difficulty1, Difficulty2).
   %clear, menu.
 
