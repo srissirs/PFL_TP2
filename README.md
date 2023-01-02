@@ -38,7 +38,7 @@ O jogo termina quando o tabuleiro estiver cheio de pedras. O último jogador tem
 
 #  Lógica do Jogo
 
-## Loop principal de cada modo
+## Representação interna do estado do jogo
 Ficheiro: **modes.pl**.
 
 Os 3 modos, player vs player, computador vs player e computador vs computador, recebem como argumentos `GameState`, `PlayerTurn` e `LastMove`. Na sua implementação, é executado o seguinte loop:
@@ -82,7 +82,7 @@ Ficheiro: **logic.pl**.
 Para determinar a lista de jogadas válidas utilizámos o predicado  *valid_moves(+GameState, +LastMove, -ListOfMoves)* que primeiro verifica se existem casas vazias adjacentes à última jogada. Caso assim seja, retorna a lista com essas células; senão o jogador pode jogar para qualque vazia do tabuleiro, pelo que é retornada uma lista com todas as casas vazias do mesmo.
 
 
-## Game Over
+## Final do Jogo
 Ficheiro: **print_board.pl**.
 
 A função `game_over(+GameState,-Winner,+Level)` verifica se o jogo está terminado ou não.
@@ -96,7 +96,7 @@ A função também implementa a possibilidade de continuar o jogo se houver apen
 
 A função `ask_player_continue(-PlayerContinue)` pergunta ao jogador se ele deseja continuar e realizar a última jogada, introduzindo 0 no caso negativo e 1 no caso positivo. É implementada com o uso da repetição com falha (`repeat`), para garantir que o jogador responde corretamente. A função `validate_player_continue` valida a resposta do jogador, garantindo que ele introduz apenas 0 ou 1.
 
-## Read move input
+## Ler jogada de um humano
 Ficheiro: **read_move_input.pl**.
 
 A função `read_move_input(+PlayerTurn, +ListOfMoves, -NewRow, -NewCol)` é usada para ler o input da nova jogada do jogador, que corresponde à linha e coluna da célula onde ele deseja colocar a nova peça. Começa por imprimir qual é o jogador atual, com a função `write_player_turn`, e, seguidamente, lê o input do jogador, com a função `read_move_input_aux`.
@@ -111,7 +111,7 @@ Ficheiro: **bot.pl**.
 Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado *choose_move(+GameState, +LastMove, +Player, +Level, -Move)*. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
 
 
-## Move
+## Execução de Jogadas
 Ficheiro: **move.pl**.
 
 A função `move(+GameState, +Move, +Player, -NewGameState)` atualiza o estado do jogo com a introdução de uma nova peça de um jogador. 
@@ -121,7 +121,7 @@ Começa por obter a lista que representa a linha onde estará localizada a nova 
 
 Finalmente, a função `move` retorna o novo estado do jogo com o nova peça.
 
-## Points
+## Avaliação do Tabuleiro
 Ficheiro. **points.pl**.
 
 A função principal é `value(+GameState, +Player, -Points)`, que calcula o número de pontos de um jogador num determinado estado do jogo. Isto é feito chamando as funções `points_in_rows`, `points_in_columns` e `points_in_diagonals`, que são responsáveis por criar uma lista de peças com pontos nas linhas, colunas e diagonais do tabuleiro, respetivamente.
