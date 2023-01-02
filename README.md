@@ -133,7 +133,8 @@ Depois das funções `points_in_rows`, `points_in_columns` e `points_in_diagonal
 # Conclusões
 
 Uma das melhorias que gostaríamos de ter implementado é a representação das colunas do tabuleiro com letras, assim como a forma como as células são identificadas quando o jogador escolhe a sua próxima jogada, para que exista menos confusão entre colunas/linhas.
-Tamnbém achamos que uma 
+Uma futura implementação seria também uma espécie de nível intermédio entre o nível 1 e 2, em que o bot ia alternadamente escolhendo a abordagem aleatória e greedy para cada jogada.
+Por último, teríamos gostado de dar a possibilidade ao jogador de voltar a repetir o jogo após ver a pontuação, em vez de redirecioná-lo diretamente para o menu.
 
 # Bibliografia
 
