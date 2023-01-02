@@ -14,7 +14,7 @@ game(GameState, 0, Player2Type, CurrentPlayerPiece, LastMove) :-
 game(GameState, 1, Player2Type, CurrentPlayerPiece, LastMove) :-
     display_game(GameState),
     \+ game_over(GameState, CurrentPlayerPiece, 1, _),
-    choose_move(GameState,LastMove, 1, Move),
+    choose_move(GameState,LastMove, _, 1, Move),
     sleep(3),
     move(GameState, Move, CurrentPlayerPiece, NewGameState),
     change_player(CurrentPlayerPiece, NewCurrentPlayerPiece),
@@ -24,7 +24,7 @@ game(GameState, 1, Player2Type, CurrentPlayerPiece, LastMove) :-
 game(GameState, 2, Player2Type, CurrentPlayerPiece, LastMove) :-
     display_game(GameState),
     \+ game_over(GameState, CurrentPlayerPiece, 2, _),
-    choose_move(GameState,LastMove, 2, Move),
+    choose_move(GameState,LastMove, CurrentPlayerPiece, 2, Move),
     sleep(3),
     move(GameState, Move, CurrentPlayerPiece, NewGameState),
     change_player(CurrentPlayerPiece, NewCurrentPlayerPiece),

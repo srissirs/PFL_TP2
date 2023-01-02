@@ -20,13 +20,13 @@ choose_best_move(FinalMove, FinalPoints, CurrentPoints, ListOfMoves, Move ):-
 
 % choose_move(+GameState,+LastMove, +Level, -Move).
 % choose the next best move (random)
-choose_move(GameState,LastMove, 1, Move):-
+choose_move(GameState,LastMove, _, 1, Move):-
     valid_moves(GameState,LastMove,ListOfMoves),
     random_member(Move, ListOfMoves),
     sleep(3).
 
 % choose the next best move (greedy)
-choose_move(GameState,LastMove, 2 , Move):-
+choose_move(GameState,LastMove, Player, 2 , Move):-
     valid_moves(GameState,LastMove,ListOfMoves),
     value(GameState, Player, CurrentPoints),
     move_level2(ListOfMoves,GameState,Player,CurrentPoints, [], FinalMove, FinalPoints),

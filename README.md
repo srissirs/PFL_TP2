@@ -46,7 +46,7 @@ O loop principal do jogo é `game(+GameState, +CurrentPlayerType, +OtherPlayerTy
 1) O tabuleiro do estado atual do jogo é impresso no ecrã -> `display_game(+GameState)`;
 2) É verificado se o jogo acabou -> `\+ game_over(+GameState, +CurrentPlayerPiece, +CurrentPlayerLevel, -Winner)`. No caso afirmativo, o loop é interrompido;
 4) No caso de ser a vez do humano, é lido e validado o input para a nova jogada -> `move_input(+GameState, +PlayerTurn, +LastMove, -Move)`;
-5) No caso de ser a vez do computador, é escolhido o seu movimento -> `choose_move(+GameState, +LastMove, +Level, -Move)`.
+5) No caso de ser a vez do computador, é escolhido o seu movimento -> `choose_move(+GameState, +LastMove, +Player, +Level, -Move)`.
 6) É feita a nova jogada, atualizando o estado do jogo -> `move(+GameState, +Move, +PlayerPiece, -NewGameState)`;
 7) Muda a vez do jogador -> `change_player(+PlayerTurn, -NewPlayerTurn)`;
 8) É chamado um novo loop de `game`, mas permutando CurrentPlayerType e OtherPlayerType e atualizando o resto dos parâmetros com o calculado.
@@ -92,7 +92,7 @@ A função `number_empty_cells(+GameState, -EmptyCells)` é usada para contar o 
 
 Para determinar o vencedor, a função conta o número de células ocupadas pelo jogador 1 e pelo jogador 2 que pertencem a um 4 em linha, usando `value(+GameState, +Player, -Points)`, e compara esses valores.
 
-A função também implementa a possibilidade de continuar o jogo se houver apenas uma célula vazia no tabuleiro. Neste caso, a função `last_move(+EmptyCells, +Level, +PlayerTurn, -PlayerContinue)` é chamada para determinar se o jogador atual (o jogador a qual corresponde a última jogada) deseja continuar o jogo ou não. Se o nível do jogo for 0 (o que significa que o modo é player vs player), perguntamos ao jogador se deseja continuar ou não. Se o nível do jogo for 1 (o que significa que é jogado pelo computador random) e for a vez do computador, a continuidade é determinada aleatoriamente. Se o nível do jogo for 2 (o que significa que é jogado por um computador inteligente) e for a vez do computador, a continuidade é determinada por este de acordo com uma avaliação das jogadas disponíveis.
+A função também implementa a possibilidade de continuar o jogo se houver apenas uma célula vazia no tabuleiro. Neste caso, a função `last_move(+EmptyCells, +Level, +PlayerTurn, -PlayerContinue)` é chamada para determinar se o jogador atual (o jogador a qual corresponde a última jogada) deseja continuar o jogo ou não. Se o nível do jogo for 0 (o que significa que o jofador é humano), perguntamos ao jogador se deseja continuar ou não. Se o nível do jogo for 1 (o que significa que o jogador é o computador nível 1) e for a vez do computador, a continuidade é determinada aleatoriamente. Se o nível do jogo for 2 (o que significa que o jogador é o computador nível 2) e for a vez do computador, a continuidade é determinada por este de acordo com uma avaliação das jogadas disponíveis.
 
 A função `ask_player_continue(-PlayerContinue)` pergunta ao jogador se ele deseja continuar e realizar a última jogada, introduzindo 0 no caso negativo e 1 no caso positivo. É implementada com o uso da repetição com falha (`repeat`), para garantir que o jogador responde corretamente. A função `validate_player_continue` valida a resposta do jogador, garantindo que ele introduz apenas 0 ou 1.
 
@@ -110,7 +110,7 @@ Depois de lido, a função `validate_move(+Row, +Col, +ListOfMoves)` é chamada 
 ## Jogada do Computador
 Ficheiro: **bot.pl**.
 
-Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado `choose_move(+GameState, +LastMove, +Level, -Move)`. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
+Existem dois níveis possíveis para os computadores (bots) e, para escolherem as suas jogadas, foi utilizado o predicado `choose_move(+GameState, +LastMove, +Player, +Level, -Move)`. Para o nível 1 foi implementado um bot que escolhia aleatóriamente a sua próxima jogada dentro da lista de jogadas possíveis. Para o nível 2, o bot escolhia a jogada que mais pontos lhe daria no momento, escolhendo uma abordagem *greedy*. Para tal, determinava-se a lista de jogadas possíveis no momento, juntamente com os pontos que ele possuía e, para todas as jogadas possíveis, verificava-se se a sua pontuação aumentava, mantinha-se ou diminuía. Assim, asseguramos que este bot escolhe a jogada que lhe dá mais pontos no momneto ou, no mínimo, que não decresce a sua pontuação atual.
 
 
 ## Execução de Jogadas
