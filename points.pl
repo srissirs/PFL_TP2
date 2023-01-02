@@ -44,7 +44,7 @@ iterate_rows(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces,PointsFinal) :-
         NumPieces1 is NumPieces+1,
         ( NumPieces1 = 4 ->
             append_rows(PointsAux, [X,Y], PointsAux1)
-        ; NumPieces1 > 4 ->
+        ; NumPieces1 = 5 ->
             take_last_4(PointsAux, PointsAux1)
         ; PointsAux1 = PointsAux
         ),
@@ -77,7 +77,7 @@ iterate_columns(GameState,X,Y,BoardSize,Player,PointsAux,NumPieces, PointsFinal)
         NumPieces1 is NumPieces+1,
         ( NumPieces1 = 4 ->
             append_cols(PointsAux, [X,Y], PointsAux1)
-        ; NumPieces1 > 4 ->
+        ; NumPieces1 = 5 ->
             take_last_4(PointsAux, PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_columns(GameState,X,Y1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)
@@ -118,7 +118,7 @@ iterate_right_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPi
         NumPieces1 is NumPieces+1,
         ( NumPieces1 = 4, \+ test_5_right(GameState, [X,Y], Player) ->
             append_right_diagonals(GameState, Player, PointsAux, [X,Y], PointsAux1)
-        ; NumPieces1 > 4 ->
+        ; NumPieces1 = 5 ->
             take_last_4(PointsAux, PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_right_diagonals(GameState,X,Y,XMov1,YMov1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)
@@ -158,7 +158,7 @@ iterate_left_diagonals(GameState,X,Y,XMov,YMov,BoardSize,Player,PointsAux,NumPie
         NumPieces1 is NumPieces+1,
         ( NumPieces1 = 4, \+ test_5_left(GameState, [X,Y], Player) ->
             append_left_diagonals(PointsAux, [X,Y], PointsAux1)
-        ; NumPieces1 > 4 ->
+        ; NumPieces1 = 5 ->
             take_last_4(PointsAux,PointsAux1)
         ; PointsAux1 = PointsAux),
         iterate_left_diagonals(GameState,X,Y,XMov1,YMov1,BoardSize,Player,PointsAux1,NumPieces1,PointsFinal)

@@ -4,6 +4,7 @@
 :- consult('points.pl').
 :- consult('game_over.pl').
 :- consult('main.pl').
+:- consult('read_move_input').
 
 % play/0
 % first predicate, returns menu
