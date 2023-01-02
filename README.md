@@ -130,9 +130,10 @@ Cada uma dessas funções itera o tabuleiro a partir das funções `iterate_rows
 
 Depois das funções `points_in_rows`, `points_in_columns` e `points_in_diagonals` serem chamadas, as listas de peças com pontos são concatenadas e as peças duplicadas são removidas, usando a função `remove_duplicates`. Finalmente, o tamanho da lista é retornado como o número de pontos do jogador.
 
-
-
 # Conclusões
+
+Uma das melhorias que gostaríamos de ter implementado é a representação das colunas do tabuleiro com letras, assim como a forma como as células são identificadas quando o jogador escolhe a sua próxima jogada, para que exista menos confusão entre colunas/linhas.
+Tamnbém achamos que uma 
 
 # Bibliografia
 

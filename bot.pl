@@ -8,10 +8,10 @@ compare_move(Move, GameState, Player, BestPoints, BestMove, NewBestPoints, NewBe
 
 % predicate that chooses the best move within an availabe ListOfMoves
 % move_level2(ListOfMoves,+GameState,+Player,+BestPoints, +BestMove, -FinalMove)
-move_level2([],_,_,BestPoints, BestMove, FinalMove):- FinalMove = BestMove.
-move_level2([H|T],GameState,Player,BestPoints, BestMove,FinalMove):- 
+move_level2([],_,_,BestPoints, BestMove, FinalMove, FinalPoints):- FinalMove = BestMove, FinalPoints = BestPoints.
+move_level2([H|T],GameState,Player,BestPoints, BestMove,FinalMove, FinalPoints):- 
     compare_move(H, GameState, Player, BestPoints, BestMove, NewBestPoints, NewBestMove),
-    move_level2(T,GameState,Player,NewBestPoints, NewBestMove,FinalMove).
+    move_level2(T,GameState,Player,NewBestPoints, NewBestMove,FinalMove,FinalPoints).
 
 % choose_move(+GameState,+LastMove, +Player, +Level, -Move).
 % choose the next best move (random)
@@ -24,5 +24,6 @@ choose_move(GameState,LastMove, Player, 1, Move):-
 choose_move(GameState,LastMove, Player, 2 , Move):-
     valid_moves(GameState,LastMove,ListOfMoves),
     value(GameState, Player, CurrentPoints),
-    move_level2(ListOfMoves,GameState,Player,CurrentPoints, [], Move),
-    sleep(3).
+    move_level2(ListOfMoves,GameState,Player,CurrentPoints, [], FinalMove, FinalPoints),
+    FinalPoints =< CurrentPoints ->  random_member(Move, ListOfMoves); Move = FinalMove;
+
