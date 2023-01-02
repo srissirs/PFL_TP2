@@ -1,5 +1,3 @@
-:- use_module(library(lists)).
-
 % substitui o valor na célula do Move ([X,Y]) pelo valor da pela do Player, criando um novo GameSate
 move(GameState, [X,Y], Player, NewGameState) :-
     nth0(Y, GameState, Row),

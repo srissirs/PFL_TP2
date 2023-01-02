@@ -1,5 +1,3 @@
-:- use_module(library(lists)).
-
 % verifica se a peça na célula [X,Y] é do Player
 player_piece(GameState, [X, Y], Player):-
     nth0(Y, GameState, Row),

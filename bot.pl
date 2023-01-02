@@ -1,8 +1,3 @@
-:- use_module(library(lists)).
-:- use_module(library(random)).
-:- consult('points.pl').
-:- consult('logic.pl').
-
 % predicate that compares if the points are higher for the player if he/she makes a certain move
 % compare_move(+Move, +GameState, +Player, +BestPoints, +BestMove, -NewBestPoints, -NewBestMove)
 compare_move(Move, GameState, Player, BestPoints, BestMove, NewBestPoints, NewBestMove):- 
@@ -22,11 +17,12 @@ move_level2([H|T],GameState,Player,BestPoints, BestMove,FinalMove):-
 % choose the next best move (random)
 choose_move(GameState,LastMove, Player, 1, Move):-
     valid_moves(GameState,LastMove,ListOfMoves),
-    random_member(Move, ListOfMoves).
+    random_member(Move, ListOfMoves),
+    sleep(3).
 
 % choose the next best move (greedy)
 choose_move(GameState,LastMove, Player, 2 , Move):-
     valid_moves(GameState,LastMove,ListOfMoves),
     value(GameState, Player, CurrentPoints),
-    move_level2(ListOfMoves,GameState,Player,CurrentPoints, [], Move).
-
+    move_level2(ListOfMoves,GameState,Player,CurrentPoints, [], Move),
+    sleep(3).

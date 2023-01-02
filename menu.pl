@@ -1,4 +1,3 @@
-
 % predicate for displaying titles
 % menu_header_format(+Header)
 menu_header_format(Header):-
@@ -145,53 +144,48 @@ menu_option(3):-
 %%%  PLAYER vs PLAYER
 play_menu_pp(Size):-
   initial_state(Size,GameState),
-  start_game(GameState).
+  start_game(GameState, 0, 0).
 
 %%%  PLAYER vs COMPUTER
 % Human plays first with level 1 computer
-play_menu_cp(Size, 1,1):-
+% play_menu_cp(+SizeBoard, +Difficulty, +PlayerTurn)
+play_menu_cp(Size, 1, 1):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Player', 'Easy').
+  start_game(GameState, 0, 1).
 
 % Human plays first with level 2 computer
 play_menu_cp(Size, 2, 1):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Player', 'Normal').
+  start_game(GameState, 0, 2).
 
 % Human plays second with level 1 computer
-play_menu_cp(Size, 1,2):-
+play_menu_cp(Size, 1, 2):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Player', 'Easy').
+  start_game(GameState, 1, 0).
 
 % Human plays second with level 2 computer
 play_menu_cp(Size, 2, 2):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Player', 'Normal').
+  start_game(GameState, 2, 0).
 
 %%%  COMPUTER vs COMPUTER
+% Computer level 1 vs computer level 1
 play_menu_cc(Size, 1, 1):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Easy', 'Easy').
+  start_game(GameState, 1, 1).
 
+% Computer level 1 vs computer level 2
 play_menu_cc(Size, 1, 2):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Easy', 'Normal').
+  start_game(GameState, 1, 2).
 
-  play_menu_cc(Size, 2, 1):-
+play_menu_cc(Size, 2, 1):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Normal', 'Easy').
+  start_game(GameState, 2, 1).
 
 play_menu_cc(Size, 2, 2):-
   initial_state(Size,GameState),
-  print_board(GameState).
-  %start_game(GameState, 'Normal', 'Normal').
+  start_game(GameState, 2, 2).
 
 % main menu
 menu :-

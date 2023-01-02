@@ -1,5 +1,3 @@
-:- use_module(library(lists)).
-
 isEmpty([]).
 
 % checks if the cell of the Move is empty
@@ -36,7 +34,7 @@ check_line(GameState, Y, X, LastX , List, Result) :-
 % check_for_empty_cells(+GameState, +X, +LastX, +Y,+LastY, +List, -FinalList)
 check_for_empty_cells(_, _,_, LastY,LastY, List, FinalList) :- FinalList = List,!.
 check_for_empty_cells(GameState, X, LastX, Y,LastY, List, FinalList) :- 
-    check_line(GameState,CurrY,X,LastX, List, Result),
+    check_line(GameState,Y,X,LastX, List, Result),
     NewY is Y+1,
     check_for_empty_cells(GameState, X,LastX ,NewY,LastY, Result, FinalList).
 
@@ -54,8 +52,9 @@ check_if_empty(GameState,AdjacentListOfMoves,FinalList) :-
 % valid_moves(+GameState, +LastMove, -ListOfMoves)
 valid_moves(GameState, [], ListOfMoves):-
     length(GameState, L),
-    check_for_empty_cells(GameState, 0, L, 0, L,[],NewList),
+    check_for_empty_cells(GameState, 0, L, 0, L, [], NewList),
     ListOfMoves = NewList.
+
 valid_moves(GameState, [LastX, LastY], ListOfMoves) :-
     X is LastX-1,
     LX is LastX+2,

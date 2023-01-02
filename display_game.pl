@@ -1,5 +1,3 @@
-:- use_module(library(lists)).
-
 build_row_board(Size,Size,List, Row):- Row = List,!.
 build_row_board(I,Size,List, Row):-
     append(List,[0],NewList),
